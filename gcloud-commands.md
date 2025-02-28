@@ -26,6 +26,7 @@ gcloud config list core/account
 gcloud config set core/project <PROJECT-ID>
 gcloud config set compute/region <REGION>
 gcloud config set compute/zone <ZONE>
+gcloud config set core/disable_usage_reporting true
 
 # List regions, zones
 gcloud compute zones list
@@ -44,7 +45,7 @@ gcloud compute instances create test2-from-template \
 --source-instance-template=https://www.googleapis.com/compute/v1/projects/tensile-talent-448510-a8/regions/europe-west1/instanceTemplates/instance-template-20250225-111311  --zone=europe-west1-c
 ```
 
-## APP ENGINE
+## APP engine
 
 IAM roles:
 
@@ -91,48 +92,59 @@ gcloud app instances list
 ## GKE - Google Cloud Kubernetes Engine
 
 ```Shell
-gcloud config list
-gcloud config set core/disable_usage_reporting true
+### Manage Cluster
+# Create a cluster
+gcloud container clusters create my-gke-cluster --zone=europe-west1-b --node-locations=europe-west1-b --disk-size=10G
 
+# Resize a cluster
+gcloud container clusters resize my-gke-cluster --node-pool=default-pool --num-nodes=2 --zone=europe-west1-b
+
+# Autoscale cluster
+gcloud container clusters update my-gke-cluster --enable-autoscaling --min-nodes=1 --max-nodes=3
+
+# Adding node pool
+gcloud container node-pools create new-node-pool --cluster my-gke-cluster
+
+# Delete cluster
+gcloud container clusters list
+gcloud container clusters delete my-gke-cluster --zone=europe-west1-b
+
+# Images - Gcloud container registry
+gcloud container images list
+
+### Manage deployment
 # Register kubctl
-gcloud container clusters create get-credentials my-gke-cluster --zone=europe-west1-c
-
-# Crate a cluster
-gcloud container clusters create my-gke-cluster --zone=europe-west1-c
+gcloud container clusters get-credentials my-gke-cluster --zone=europe-west1-b
 
 # Create deployment
 kubectl create deployment first-deployment --image=nginx:latest
+kubectl apply -f deployment.yaml
 kubectl get deployment
+kubectl describe deployment deployment-1
 kubectl get nodes
 kubectl get pods
 
 # Manual scaling
-## Pods
 kubectl scale deployment deployment-1 --replicas=2
-kubectl get podsg
-## Nodes
-cloud container clusters resize my-gke-cluster --node-pool=default-pool --num-nodes=2 --zone=europe-west1-c
-kubectl get nodes
+
 # Expose deployment
 kubectl expose deployment deployment-1 --type=LoadBalancer --port=8080 --target-port=80
 
 # Auto scalinig
-# Pods
 kubectl autoscale deployment deployment-1 --max=4 --cpu-percent=70
 kubectl get hpa
 kubectl get pods
+kubectl get replicaset
 
 # Config map
 kubectl get configmap
 kubectl get secret
 kubectl get service
 
+# Rollback
+kubectl rollout undo deployment hello-world --to-revision=1
+
 # Delete
-## Service
 kubectl delete service deployment-1-service
-## Deployment
 kubectl delete deployment deployment-1
-## Cluster
-gcloud container clusters list
-gcloud container clusters delete my-gke-cluster --zone=europe-west1-c
 ```
