@@ -34,6 +34,21 @@ gcloud compute regions list
 gcloud compute machine-types list --filter zone:europe-west1-b
 ```
 
+## Projects
+
+```Shell
+gcloud projects create/delete/describe/list
+gcloud add-iam-policy binding #  Adds a single IAM policy binding (i.e., grants a role to a user, group, or service account) without affecting existing bindings.
+gcloud projects add-iam-policy-binding PROJECT_ID \
+    --member="user:example@example.com" \
+    --role="roles/viewer"
+
+gcloud set-iam-policy # Purpose: Replaces the entire IAM policy for a resource with a new policy (modifying, adding, or removing bindings).
+gcloud projects get-iam-policy PROJECT_ID > policy.json
+# Edit policy.json manually
+gcloud projects set-iam-policy PROJECT_ID policy.json
+```
+
 ## Create VM instances
 
 ```Shell
@@ -112,6 +127,9 @@ gcloud container clusters delete my-gke-cluster --zone=europe-west1-b
 # Images - Gcloud container registry
 gcloud container images list
 
+# Create Sub-network
+gcloud container clusters create --create-subnetwork name=my-subnet,range=/21
+
 ### Manage deployment
 # Register kubctl
 gcloud container clusters get-credentials my-gke-cluster --zone=europe-west1-b
@@ -147,4 +165,35 @@ kubectl rollout undo deployment hello-world --to-revision=1
 # Delete
 kubectl delete service deployment-1-service
 kubectl delete deployment deployment-1
+```
+
+## Storage
+
+```Shell
+# Change Storage Class
+gcloud storage objects update gs://BUCKET_NAME/OBJECT_NAME --storage-class=STORAGE_CLASS
+
+# Assign IAM role
+gsutil iam ch user:(user_email):(role1,role2) gs://(BUCKET)
+
+# Remove IAM role
+gsutil iam ch -d user:(user_email):(role1,role2) gs://(BUCKET)
+
+# Assign ACLs
+gsutil acl ch -u (user_email):(O/R/W) gs://(BUCKET)
+
+# Delete all ACLs
+gsutil acl ch -d (user_email) gs://(BUCKET)
+
+# Signed URLs
+gsutil signurl -d (time_period (10m)) (keyfile.json) gs://(BUCKET)/(object)
+
+# Versioning policy
+gsutil versioning get gs://BUCKET
+gsutil versioning set on gs://BUCKET
+gsutil ls -a gs://BUCKET
+
+# Lifecycle policy
+gsutil lifecycle get gs://BUCKET > filename.json
+gsutil lifecycle set filename.json gs://BUCKET
 ```
