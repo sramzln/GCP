@@ -197,3 +197,16 @@ gsutil ls -a gs://BUCKET
 gsutil lifecycle get gs://BUCKET > filename.json
 gsutil lifecycle set filename.json gs://BUCKET
 ```
+
+## Arifactory
+
+```Shell
+gcloud arifacts repositories list
+```
+
+## BigQuery
+
+```Shell
+bq ls
+bq show --format=prettyjson analitics1:primarydata
+```
