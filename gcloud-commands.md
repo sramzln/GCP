@@ -210,3 +210,37 @@ gcloud arifacts repositories list
 bq ls
 bq show --format=prettyjson analitics1:primarydata
 ```
+
+## Pub/Sub
+
+```Shell
+gcloud config list
+gcloud projects list
+gcloud projects set <PROJECT>
+
+# Create Topic
+gcloud pubsub topics create topic1
+
+# Create Subscription  
+gcloud pubsub subscriptions create subs1 --topic=topic1
+gcloud pubsub subscriptions create subs2 --topic=topic1
+
+# Publish a message
+gcloud pubsub topics publish topic1 --message="My first message"
+gcloud pubsub topics publish topic1 --message="My second message"
+gcloud pubsub topics publish topic1 --message="My third message"
+
+# Pull a message
+gcloud pubsub subscriptions pull subs1
+gcloud pubsub subscriptions pull subs1 --auto-ack
+
+# List 
+gcloud pubsub topics list
+gcloud pubsub topics list-subscriptions topic1
+
+# Delete
+gcloud pubsub topics delete topic1
+gcloud pubsub topics list-subscriptions topic1
+gcloud pubsub subscriptions delete subs1
+gcloud pubsub topics list
+```
