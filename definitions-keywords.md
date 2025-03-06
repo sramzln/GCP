@@ -1,4 +1,4 @@
-# Definistion & Keywords
+# Definitions & Keywords
 
 ## Pub/Sub
 
